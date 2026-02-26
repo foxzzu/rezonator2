@@ -73,6 +73,7 @@ set(PROJECT_SOURCES
     src/app/PersistentState.h src/app/PersistentState.cpp
     src/app/ProjectOperations.h src/app/ProjectOperations.cpp
     src/core/Beam.h src/core/Beam.cpp
+    src/core/CodeUtils.h src/core/CodeUtils.cpp
     src/core/CommonTypes.h src/core/CommonTypes.cpp
     src/core/Complex.h src/core/Complex.cpp
     src/core/Element.h src/core/Element.cpp

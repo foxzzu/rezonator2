@@ -600,7 +600,7 @@ void ProjectWindow::showMemosWindow()
 
 void ProjectWindow::newCustomCodeWindow()
 {
-    _mdiArea->appendChild(CustomCodeWindow::create(schema(), "_generic_empty"));
+    _mdiArea->appendChild(CustomCodeWindow::create(schema(), "func_generic"));
     schema()->markModified("Custom code added");
 }
 

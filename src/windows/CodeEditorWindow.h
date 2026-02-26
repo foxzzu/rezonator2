@@ -75,14 +75,4 @@ private:
     void saveToLibrary();
 };
 
-namespace CodeUtils
-{
-/// Returns a full path to the code template file.
-QString codeTemplateFile(const QString &templateName);
-
-/// Returns a content of the code template file
-/// or empty string if that does not exists.
-QString loadCodeTemplate(const QString &templateName);
-}
-
 #endif // CODE_EDITOR_WINDOW_H

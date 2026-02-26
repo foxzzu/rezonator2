@@ -2,6 +2,7 @@
 
 #include "CustomPlotCodeWindow.h"
 #include "../app/MessageBus.h"
+#include "../core/CodeUtils.h"
 
 #include "helpers/OriDialogs.h"
 #include "helpers/OriWidgets.h"
@@ -51,7 +52,7 @@ void CustomPlotFuncWindow::closeEvent(QCloseEvent* ce)
 
 bool CustomPlotFuncWindow::configureInternal()
 {
-    function()->setCode(CodeUtils::loadCodeTemplate("_plot_empty"));
+    function()->setCode(CodeUtils::loadCodeTemplate("func_plot"));
 
     return true;
 }

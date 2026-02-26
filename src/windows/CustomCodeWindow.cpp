@@ -1,5 +1,6 @@
 #include "CustomCodeWindow.h"
 
+#include "../core/CodeUtils.h"
 #include "../core/PyRunner.h"
 #include "../math/CustomFuncUtils.h"
 
@@ -30,7 +31,7 @@ CustomCodeWindow* CustomCodeWindow::create(Schema* owner, const QString &codeTem
     auto w = new CustomCodeWindow(owner);
 
     if (!codeTemplate.isEmpty())
-        w->_editor->loadCode(CodeUtils::codeTemplateFile(codeTemplate));
+        w->_editor->setCode(CodeUtils::loadCodeTemplate(codeTemplate));
         
     return w;
 }
