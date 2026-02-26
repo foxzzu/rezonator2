@@ -374,19 +374,6 @@ ParameterFilterPtr defaultParamFilter()
 
 void copyParamValues(const Element* source, Element* target, const char* reason)
 {
-    if (source->params().size() != target->params().size())
-    {
-        qWarning() << "copyParamValues" << reason << "elements have different parameters count";
-        return;
-    }
-    ElementMatrixLocker matrixLocker(target, reason);
-    auto params = source->params();
-    for (int i = 0; i < params.count(); i++)
-        target->params().at(i)->setValue(params.at(i)->value());
-}
-
-void copyParamValuesByName(const Element* source, Element* target, const char* reason)
-{
     ElementMatrixLocker matrixLocker(target, reason);
     QMap<QString, Parameter*> targetParams;
     for (auto p : target->params())

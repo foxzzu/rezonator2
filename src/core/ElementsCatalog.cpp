@@ -56,7 +56,10 @@ void ElementsCatalog::registerElement(const QString &category, Element *elem)
 {
     foreach (Element *e, _elements)
         if (e->type() == elem->type())
+        {
+            delete elem;
             return;
+        }
 
     if (!_categories.contains(category))
         _categories.append(category);
@@ -76,13 +79,27 @@ Element* ElementsCatalog::create(const QString& type) const
     return nullptr;
 }
 
-Element* ElementsCatalog::create(const Element* sample, bool copyParams) const
+Element* ElementsCatalog::create(const Element* sample) const
 {
     auto newElem = create(sample->type());
 
-    if (copyParams)
-        Z::Utils::copyParamValues(sample, newElem, "ElementsCatalog: create elem from sample");
+    // Copy formula before parameters
+    // so after the parameters assigned, the matrix would be calculated
+    auto sampleFormula = dynamic_cast<const ElemFormula*>(sample);
+    auto newFormula = dynamic_cast<ElemFormula*>(newElem);
+    if (newFormula && sampleFormula)
+        newFormula->assign(sampleFormula);
 
+    for (auto sampleParam : sample->params())
+        if (sampleParam->hasOption(Z::ParamOption::Custom))
+        {
+            auto newParam = new Z::Parameter;
+            newParam->copyFrom(sampleParam);
+            newElem->addParam(newParam);
+        }
+
+    Z::Utils::copyParamValues(sample, newElem, "ElementsCatalog: create elem from sample");
+    
     return newElem;
 }
 

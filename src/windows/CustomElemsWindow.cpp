@@ -150,7 +150,7 @@ void CustomElemsWindow::actionElemAdd()
     auto sample = ElementsCatalogDialog::chooseElementSample();
     if (!sample) return;
 
-    Element *elem = ElementsCatalog::instance().create(sample->elem, sample->isCustom);
+    Element *elem = ElementsCatalog::instance().create(sample->elem);
     if (!elem) return;
 
     _library->insertElements({elem}, _table->currentRow(), Arg::RaiseEvents(true));

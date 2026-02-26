@@ -46,6 +46,13 @@ std::optional<ElementsCatalogDialog::ElementSample> ElementsCatalogDialog::choos
         sample.isCustom = true;
         sample.deleter = QSharedPointer<Element>(sample.elem);
     }
+    else
+    {
+        // ↑ Custom samples are created by loading them from library
+        // so they are already initialized and no need to call init() for them
+        
+        sample.elem->init();
+    }
 
     return sample;
 }

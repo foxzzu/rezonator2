@@ -9,6 +9,10 @@ class Element;
 class ParamsEditor;
 class Schema;
 
+/**
+    The class provides additional functionality for @a ParamsEditor widget
+    allowing for adding and removing parameters from element.
+*/
 class ParamSpecsEditor : public QObject
 {
     Q_OBJECT

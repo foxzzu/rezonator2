@@ -30,6 +30,8 @@ DECLARE_ELEMENT(ElemFormula, Element)
     int errorLine() const { return _errorLine; }
 
     void setPrintFunc(std::function<void(const QString&)> printFunc) { _printFunc = printFunc; }
+    
+    void init() override;
 private:
     QString _typeName;
     QString _formula;

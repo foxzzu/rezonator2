@@ -309,6 +309,12 @@ public:
     ElemAsRange asRange();
     ElemAsDynamic asDynamic();
     ElemAsInterface asInterface();
+    
+    /// Initialize a new instance of the element when it has been created by user
+    /// (selected from the elements catalog). No need to call this function
+    /// after the element has beed loaded from file, ot pasted from clipboard,
+    /// or created autmatically in any way.
+    virtual void init() {}
 
 protected:
     Element();
@@ -520,12 +526,8 @@ void setElemWavelen(Element* elem, const Z::Value& lambda);
 ParameterFilterPtr defaultParamFilter();
 
 /// Copyes parameter values from source element to the target one.
-/// Both elements should be of the same type or at least contain the same number of parameters.
+/// Elements can be of different types, parameters are matched by their name and dimension.
 void copyParamValues(const Element* source, Element* target, const char *reason);
-
-/// Copyes parameter values from source element to the target one.
-/// Elements can be of different types, parameters are matched by their name and dimention.
-void copyParamValuesByName(const Element* source, Element* target, const char *reason);
 
 inline QSize elemIconSize() { return QSize(24, 24); }
 inline QString elemIconPath(const QString& elemType) { return ":/elem_icon/" % elemType; }

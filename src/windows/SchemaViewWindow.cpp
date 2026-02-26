@@ -147,16 +147,11 @@ void SchemaViewWindow::elemDoubleClicked(Element *elem)
 
 void SchemaViewWindow::appendElement(ElementsCatalogDialog::ElementSample sample, int beforeIndex, std::function<void(Element*)> prepareNewElement)
 {
-    Element* elem = ElementsCatalog::instance().create(sample.elem, sample.isCustom);
+    Element* elem = ElementsCatalog::instance().create(sample.elem);
     if (!elem) return;
     
     if (prepareNewElement)
         prepareNewElement(elem);
-
-    if (!sample.isCustom && !elem->isInterface())
-        // For customs, matrix calculated after param values copied from sample
-        // For interfaces, matrix calculated after insertion into schema
-        elem->calcMatrix("SchemaViewWindow: element added");
 
     if (AppSettings::instance().elemAutoLabel)
         Z::Utils::generateLabel(schema()->elements(), elem, sample.isCustom ? sample.elem->label() : QString());
@@ -186,19 +181,12 @@ void SchemaViewWindow::actionElemReplace()
     auto sample = ElementsCatalogDialog::chooseElementSample(tr("Replace Element"), "elem_opers_replace");
     if (!sample) return;
 
-    if (sample->elem->type() == curElem->type())
-    {
-        if (sample->isCustom)
-            Z::Utils::copyParamValues(sample->elem, curElem, "SchemaViewWindow::replaceElement");
-        return;
-    }
-
     if (!confirmDeletion({curElem}, true)) return;
 
     appendElement(*sample, curRow, [this, curElem](Element *elem){
         elem->setLabel(curElem->label());
         elem->setTitle(curElem->title());
-        Z::Utils::copyParamValuesByName(curElem, elem, "SchemaViewWindow::replaceElement");
+        Z::Utils::copyParamValues(curElem, elem, "SchemaViewWindow::replaceElement");
     
         schema()->deleteElements({curElem}, Arg::RaiseEvents(true), Arg::FreeElem(true));
     });

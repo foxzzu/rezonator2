@@ -1,5 +1,6 @@
 #include "ElementFormula.h"
 
+#include "../core/CodeUtils.h"
 #include "../core/PyRunner.h"
 
 #include <QApplication>
@@ -79,5 +80,10 @@ void ElemFormula::assign(const ElemFormula* other)
     _formula = other->formula();
     for (auto it = _matrs.cbegin(); it != _matrs.cend(); it++)
         _matrs[it->first] = it->second;
+}
+
+void ElemFormula::init()
+{
+    _formula = CodeUtils::loadCodeTemplate("elem_formula");
 }
 

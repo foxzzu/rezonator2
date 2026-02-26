@@ -190,6 +190,7 @@ void ElementPropsDialog::collect()
     
     if (_paramSpecsEditor)
         _paramSpecsEditor->collect();
+    else _editorParams->applyValues();
     
     accept();
 }
