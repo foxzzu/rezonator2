@@ -220,7 +220,7 @@ bool PyRunner::load(const ModuleProps &props)
             auto doc = QString::fromUtf8(PyUnicode_AsUTF8(pDoc));
             auto lines = doc.split('\n', Qt::SkipEmptyParts);
             if (!lines.empty())
-                codeTitle = lines.first();
+                codeTitle = lines.first().trimmed();
         } 
     }
     
@@ -416,6 +416,11 @@ PyRunner::FuncResult PyRunner::run(const QString &funcName, const Args &args, co
                 rec[k] = QVariant::fromValue(dims.at(dim));
                 break;
             }
+            case ftMatrix:
+                CHECK_E(PyObject_TypeCheck(pField, PyClass::Matrix::type()), "Matrix expected");
+                auto m = (PyClass::Matrix::Self*)pField;
+                rec[k] = QVariant::fromValue(m->matrix);
+                break;
             }
             #undef CHECK_E
         }

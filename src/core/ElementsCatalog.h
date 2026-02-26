@@ -19,8 +19,10 @@ public:
     Element* create(const QString& type) const;
 
     /// Creates a new element of the same type as the sample
-    /// and copies all parameter values to the target element, if required.
-    Element* create(const Element* sample, bool copyParams = false) const;
+    /// and copies all parameters values to the target element.
+    /// Other sample data can also be copied for specific types of element,
+    /// for example a formula code for @a ElemFormula.
+    Element* create(const Element* sample) const;
 
     /// Registeres element in the catalog at the specific category.
     void registerElement(const QString& category, Element *elem);

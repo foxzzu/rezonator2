@@ -40,11 +40,6 @@ class PlotParamsPanel;
 class SchemaStorable;
 class UnitsMenu;
 
-enum class ElemDeletionReaction {
-    None,
-    Close
-};
-
 struct CursorInfoValue
 {
     enum ValueKind {
@@ -107,19 +102,19 @@ public:
     QList<BasicMdiChild::MenuItem> menuItems_Edit() override;
     QString helpTopic() const override { return _function->helpTopic(); }
 
+    // inherits from SchemaMdiChild
+    ElemDeletionReaction reactElemDeletion(const Elements&) override;
+
     // Implementation of SchemaListener
     void recalcRequired(Schema*) override { update(); }
     void elementDeleting(Schema*, Element*) override;
     void globalParamDeleting(Schema*, Z::Parameter*) override;
-    void customParamDeleting(Z::Parameter*) override;
+    void elemParamDeleting(Z::Parameter*) override;
 
     // Called from FuncOptionsPanel when function mode changed e.g. when the Caustic function switches between W and R.
     // Responsible window should override these methods and save/restore signifacant view differences in _storedView.
     virtual void storeView(FuncMode) {}
     virtual void restoreView(FuncMode) {}
-
-    /// Returns what will happen if one or all the elements are deleted.
-    virtual ElemDeletionReaction reactElemDeletion(const Elements&);
 
     // inherited from IAppSettingsListener
     void optionChanged(AppSettingsOption option) override;

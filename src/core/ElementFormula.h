@@ -3,38 +3,43 @@
 
 #include "Element.h"
 
-#include <QApplication>
-
-namespace Z {
-class Lua;
-}
+class PyRunner;
 
 DECLARE_ELEMENT(ElemFormula, Element)
     ElemFormula();
     ~ElemFormula() override;
-    TYPE_NAME(qApp->translate("Elements", "Formula element"))
     DEFAULT_LABEL("C")
     CALC_MATRIX
-    bool hasMatricesTS() const { return _hasMatricesTS; }
-    void setHasMatricesTS(bool on) { _hasMatricesTS = on; }
+
+    QString typeName() const override;
+    QString customTypeName() const { return _typeName; } // for element saving
+    void setTypeName(const QString &v) { _typeName = v; } // for element loading
+    
     QString formula() const { return _formula; }
-    QString error() const { return _error; }
-    bool ok() const { return _error.isEmpty(); }
     void setFormula(const QString& formula) { _formula = formula; }
-    void addParam(Z::Parameter* param, int index = -1);
-    void removeParam(Z::Parameter* param);
-    void moveParamUp(Z::Parameter* param);
-    void moveParamDown(Z::Parameter* param);
+
     void assign(const ElemFormula* other);
-    void reset();
+    
+    /// Explicitly makes a locked element to recalculate its matrices
+    /// In general it's done in parameter on-change handler
+    /// but formula elem can have no params but still provide matrices
+    /// that must be recalculated on schema loading.
+    void scheduleCalcMatrix() { _calcMatrixNeeded = true; }
+    
+    QStringList errorLog() const { return _errorLog; }
+    int errorLine() const { return _errorLine; }
+
+    void setPrintFunc(std::function<void(const QString&)> printFunc) { _printFunc = printFunc; }
+    
+    void init() override;
 private:
-    bool _hasMatricesTS = true;
+    QString _typeName;
     QString _formula;
-    QString _error;
-    Z::Lua* _lua = nullptr;
-    bool reopenLua();
-    void setUnity();
-    bool getResult(const QMap<QString, double>& results, const QString& name, double& result);
+    QStringList _errorLog;
+    int _errorLine;
+    std::function<void(const QString&)> _printFunc;
+
+    void showError(PyRunner *py);
 DECLARE_ELEMENT_END
 
 #endif // ELEMENT_FORMULA_H

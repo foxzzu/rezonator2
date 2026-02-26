@@ -2,6 +2,7 @@
 
 #include "CustomTableCodeWindow.h"
 #include "../app/MessageBus.h"
+#include "../core/CodeUtils.h"
 
 #include "helpers/OriDialogs.h"
 #include "helpers/OriWidgets.h"
@@ -41,7 +42,7 @@ void CustomTableFuncWindow::closeEvent(QCloseEvent* ce)
 
 bool CustomTableFuncWindow::configureInternal(const TableFunction::Params& params)
 {
-    function()->setCode(CodeUtils::loadCodeTemplate("_table_empty"));
+    function()->setCode(CodeUtils::loadCodeTemplate("func_table"));
 
     return TableFuncWindow::configureInternal(params);
 }

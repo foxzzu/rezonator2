@@ -83,8 +83,8 @@ public:
     ParamEditor* addEditor(Z::Parameter* param, const QVector<Z::Unit>& units = {}, int index = -1);
     void removeEditor(Z::Parameter* param);
     void populateEditor(Z::Parameter* param);
-    void moveEditorUp(Z::Parameter* param);
-    void moveEditorDown(Z::Parameter* param);
+    bool moveEditorUp(Z::Parameter* param);
+    bool moveEditorDown(Z::Parameter* param);
     void addSeparator(const QString& title = QString(), bool flat = true);
     ParamEditor* selectedEditor();
 
@@ -106,6 +106,7 @@ private:
     QList<ParamEditor*> _editors;
     Ori::Widgets::InfoPanel* _infoPanel = nullptr;
     QBoxLayout* _paramsLayout;
+    QWidget* _emptyStub;
     void adjustEditors();
     void paramValueEdited(double value);
     void paramUnitChanged(Z::Unit unit);
@@ -114,6 +115,7 @@ private:
     void paramUnfocused();
     void focusNextParam();
     void focusPrevParam();
+    void toggleEmptyStub();
 };
 
 //------------------------------------------------------------------------------

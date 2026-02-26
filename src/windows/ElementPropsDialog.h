@@ -18,6 +18,7 @@ QT_END_NAMESPACE
 class Element;
 class ParamsEditor;
 class ParamsEditorAbcd;
+class ParamSpecsEditor;
 
 class ElementPropsDialog : public RezonatorDialog
 {
@@ -54,10 +55,11 @@ private:
     QCheckBox *_layoutDrawAlt;
     QCheckBox *_elemDisabled;
     QToolButton *_butParamsMenu;
-    QMenu *_menuParams;
-    Z::Parameters _newParams, _removedParams, _editedParams, _redimedParams, _paramPresets;
-    QMap<Z::Parameter*, Z::Parameter> _backupParams;
+    QMenu *_paramsMenu;
+    bool _paramsMenuLoaded = false;
+    Z::Parameters _paramPresets;
     QAction *_actnCreateParam, *_actnEditParam, *_actnRemoveParam,
+        *_actnMoveParamUp, *_actnMoveParamDown,
         *_actnRestorePresets, *_actnParamsHelp;
     std::shared_ptr<ElementEventsLocker> _eventsLocker;
     std::shared_ptr<ElementMatrixLocker> _matrixLocker;
@@ -66,18 +68,14 @@ private:
     QWidget* initPageOptions();
     QWidget* initPageOutline();
     
-    void createCustomParam();
-    void editCustomParam();
-    void removeCustomParam();
     void restoreParamPresets();
     void showParamsHelp();
-    void updatePageParams();
-    void updateParamsMenu();
-    
-    Z::Parameters existedParams() const;
-    void addCustomParam(Z::Parameter*);
-    void resetParamPresets();
+    void paramsMenuAboutToShow();
+    void clearParamsMenu();
     QAction* makePresetAction(Z::Parameter*);
+
+    ParamSpecsEditor *_paramSpecsEditor = nullptr;
+    ParamSpecsEditor* paramSpecsEditor();
 };
 
 //------------------------------------------------------------------------------

@@ -107,10 +107,10 @@ const SchemaEvents::EventProps& SchemaEvents::propsOf(Event event)
         // no need to modify schema after operations with custom params
         // because they all happen in the element props dialog 
         // and there will be ElemChanged after the dialog accepted
-        INIT_EVENT(CustomParamCreated, false,        SchemaState::Current ),
-        INIT_EVENT(CustomParamEdited,  false,        SchemaState::Current ),
-        INIT_EVENT(CustomParamDeleted, false,        SchemaState::Current ),
-        INIT_EVENT(CustomParamDeleting,false,        SchemaState::Current  ),
+        INIT_EVENT(ElemParamCreated,   false,        SchemaState::Current ),
+        INIT_EVENT(ElemParamEdited,    false,        SchemaState::Current ),
+        INIT_EVENT(ElemParamDeleted,   false,        SchemaState::Current ),
+        INIT_EVENT(ElemParamDeleting,  false,        SchemaState::Current  ),
 
         INIT_EVENT(PumpCreated,        true,         SchemaState::Modified ),
         INIT_EVENT(PumpChanged,        true,         SchemaState::Modified ),
@@ -153,10 +153,10 @@ void SchemaEvents::notify(SchemaListener* listener, SchemaEvents::Event event, v
     case GlobalParamDeleting: listener->globalParamDeleting(_schema, reinterpret_cast<Z::Parameter*>(param)); break;
     case GlobalParamDeleted: listener->globalParamDeleted(_schema, reinterpret_cast<Z::Parameter*>(param)); break;
 
-    case CustomParamCreated: listener->customParamCreated(reinterpret_cast<Z::Parameter*>(param)); break;
-    case CustomParamEdited: listener->customParamEdited(reinterpret_cast<Z::Parameter*>(param)); break;
-    case CustomParamDeleting: listener->customParamDeleting(reinterpret_cast<Z::Parameter*>(param)); break;
-    case CustomParamDeleted: listener->customParamDeleted(reinterpret_cast<Z::Parameter*>(param)); break;
+    case ElemParamCreated: listener->elemParamCreated(reinterpret_cast<Z::Parameter*>(param)); break;
+    case ElemParamEdited: listener->elemParamEdited(reinterpret_cast<Z::Parameter*>(param)); break;
+    case ElemParamDeleting: listener->elemParamDeleting(reinterpret_cast<Z::Parameter*>(param)); break;
+    case ElemParamDeleted: listener->elemParamDeleted(reinterpret_cast<Z::Parameter*>(param)); break;
 
     case PumpCreated: listener->pumpCreated(_schema, reinterpret_cast<PumpParams*>(param)); break;
     case PumpChanged: listener->pumpChanged(_schema, reinterpret_cast<PumpParams*>(param)); break;
@@ -183,7 +183,7 @@ ElementSelector::~ElementSelector()
 class GlobalParamsElem : public Element
 {
 public:
-    const QString type() const override { return "GlobalParamsElem"; };
+    QString type() const override { return QStringLiteral("GlobalParamsElem"); };
 protected:
     Element* create() const override {
         qWarning() << "Do not use GlobalParamsElem::create()";
@@ -423,23 +423,23 @@ void Schema::relinkInterfaces()
     int elemCount = elems.size();
     for (int i = 0; i < elemCount; i++)
     {
-        ElementInterface *iface = dynamic_cast<ElementInterface*>(elems.at(i));
+        auto iface = elems.at(i)->asInterface();
         if (!iface) continue;
 
-        ElementEventsLocker eventLocker(iface, "Schema::relinkInterfaces");
-        ElementMatrixLocker matrixLocker(iface, "Schema::relinkInterfaces");
+        ElementEventsLocker eventLocker(iface->elem, "Schema::relinkInterfaces");
+        ElementMatrixLocker matrixLocker(iface->elem, "Schema::relinkInterfaces");
 
-        removeParamLinks(iface);
+        removeParamLinks(iface->elem);
 
-        ElementRange *left = nullptr;
-        ElementRange *right = nullptr;
+        ElemAsRange left;
+        ElemAsRange right;
 
         if (i == 0)
         {
             if (tripType() == TripType::RR)
-                left = dynamic_cast<ElementRange*>(elems.at(elemCount-1));
+                left = elems.at(elemCount-1)->asRange();
         }
-        else left = dynamic_cast<ElementRange*>(elems.at(i-1));
+        else left = elems.at(i-1)->asRange();
         if (left)
         {
             addParamLink(left->paramIor(), iface->paramIor1(), Z::ParamLink_NonStorable);
@@ -450,9 +450,9 @@ void Schema::relinkInterfaces()
         if (i == elemCount - 1)
         {
             if (tripType() == TripType::RR)
-                right = dynamic_cast<ElementRange*>(elems.at(0));
+                right = elems.at(0)->asRange();
         }
-        else right = dynamic_cast<ElementRange*>(elems.at(i+1));
+        else right = elems.at(i+1)->asRange();
         if (right)
         {
             addParamLink(right->paramIor(), iface->paramIor2(), Z::ParamLink_NonStorable);

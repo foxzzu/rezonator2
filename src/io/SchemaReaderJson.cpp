@@ -424,7 +424,6 @@ Element* readElement(const QJsonObject& root, Z::Report* report)
     // No need in locking element events here as all the schema events are locked during loading
     ElementMatrixLocker matrixLocker(elem, "Z::IO::Json::readElement");
 
-    auto formulaElem = dynamic_cast<ElemFormula*>(elem);
 
     elem->setLabel(root["label"].toString());
     elem->setTitle(root["title"].toString());
@@ -434,10 +433,13 @@ Element* readElement(const QJsonObject& root, Z::Report* report)
                                            : "layout_draw_alt" // since 2.0.13
         ].toBool(elem->layoutOptions.drawAlt);
     elem->setDisabled(root["is_disabled"].toBool());
+
+    auto formulaElem = dynamic_cast<ElemFormula*>(elem);
     if (formulaElem)
     {
-        formulaElem->setHasMatricesTS(root["has_matrices_ts"].toBool());
+        formulaElem->setTypeName(root["type_name"].toString());
         formulaElem->setFormula(root["formula"].toString());
+        formulaElem->scheduleCalcMatrix();
     }
     
     auto paramSpecsJson = root["param_specs"];
@@ -473,8 +475,6 @@ Element* readElement(const QJsonObject& root, Z::Report* report)
             }
         }
     }
-
-    // TODO: read misalignments
 
     return elem;
 }

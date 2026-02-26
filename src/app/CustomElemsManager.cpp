@@ -118,7 +118,7 @@ QString saveToLibrary(Element* elem)
 
     if (!ok) return QString();
 
-    auto newElem = ElementsCatalog::instance().create(elem, true);
+    auto newElem = ElementsCatalog::instance().create(elem);
     newElem->setLabel(labelEditor->text().trimmed());
     newElem->setTitle(titleEditor->text().trimmed());
     library->insertElements({newElem}, -1, Arg::RaiseEvents(false));

@@ -73,6 +73,7 @@ set(PROJECT_SOURCES
     src/app/PersistentState.h src/app/PersistentState.cpp
     src/app/ProjectOperations.h src/app/ProjectOperations.cpp
     src/core/Beam.h src/core/Beam.cpp
+    src/core/CodeUtils.h src/core/CodeUtils.cpp
     src/core/CommonTypes.h src/core/CommonTypes.cpp
     src/core/Complex.h src/core/Complex.cpp
     src/core/Element.h src/core/Element.cpp
@@ -216,6 +217,7 @@ set(PROJECT_SOURCES
     src/widgets/ParamsEditor.h src/widgets/ParamsEditor.cpp
     src/widgets/ParamsListWidget.h src/widgets/ParamsListWidget.cpp
     src/widgets/ParamsTreeWidget.h src/widgets/ParamsTreeWidget.cpp
+    src/widgets/ParamSpecsEditor.h src/widgets/ParamSpecsEditor.cpp
     src/widgets/PlotHelpers.h src/widgets/PlotHelpers.cpp
     src/widgets/PlotParamsPanel.h src/widgets/PlotParamsPanel.cpp
     src/widgets/RichTextItemDelegate.h src/widgets/RichTextItemDelegate.cpp

@@ -52,10 +52,8 @@ protected:
     QString _customTitle;
     QString _defaultTitle;
 
-    void logInfo(const QString &msg, bool scrollToEnd = true);
-    void logError(const QString &msg, bool scrollToEnd = true);
     void logError(const QStringList &log, int errorLine);
-    void logScrollToEnd();
+    void logInfo(const QString &msg);
     
     virtual void runCode();
 
@@ -76,15 +74,5 @@ private:
     void markModified(bool m);
     void saveToLibrary();
 };
-
-namespace CodeUtils
-{
-/// Returns a full path to the code template file.
-QString codeTemplateFile(const QString &templateName);
-
-/// Returns a content of the code template file
-/// or empty string if that does not exists.
-QString loadCodeTemplate(const QString &templateName);
-}
 
 #endif // CODE_EDITOR_WINDOW_H
