@@ -13,6 +13,7 @@
 #include "helpers/OriLayouts.h"
 #include "helpers/OriWidgets.h"
 
+#include <qcpl_consts.h>
 #include <qcpl_plot.h>
 #include <qcpl_format.h>
 #include <qcpl_io_json.h>
@@ -242,7 +243,8 @@ void StabilityMap2DWindow::createContent()
     _autolimiter = _plot->addGraph();
     _autolimiter->setPen(QPen(Qt::transparent));
     _autolimiter->setSelectable(QCP::stNone);
-    _plot->serviceGraphs().append(_autolimiter);
+    _autolimiter->setProperty(PROP_GRAPH_SKIP_CLICKS, true);
+    _autolimiter->setProperty(PROP_GRAPH_DONT_COUNT, true);
 
     // DISABLED: this breaks X-axis formatting. The bottom margin of X-axis can be increased
     // and color scale is automatically updated, but it can't be decreased.
