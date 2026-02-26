@@ -1,3 +1,4 @@
+.. _elem_thin_lens:
 .. index:: single: thin lens
 .. index:: single: lens (thin)
 
@@ -19,3 +20,4 @@ The thin lens acts in the same way as :doc:`spherical mirror <ElemCurveMirror>`,
     - :doc:`../elem_matrs`
     - :doc:`../catalog`
     - :doc:`../elem_props`
+    - :doc:`ElemCurveMirror`

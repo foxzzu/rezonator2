@@ -14,6 +14,7 @@ Round-trip type defines the order in which element matrices are :ref:`multiplied
 
 .. _schema_kind_sw:
 .. index:: single: standing wave system
+.. index:: single: SW
 
 SW, Standing wave system
 ------------------------
@@ -26,6 +27,7 @@ A product of elements' matrices is calculated over system double pass (round-tri
 
 .. _schema_kind_rr:
 .. index:: single: ring resonator
+.. index:: single: RR
 
 RR, Ring resonator
 ------------------
@@ -38,6 +40,7 @@ A beam passes through each element once. After the last element (rightmost), the
 
 .. _schema_kind_sp:
 .. index:: single: single-pass system
+.. index:: single: SP
 
 SP, Single-pass system
 ----------------------

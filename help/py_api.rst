@@ -1,3 +1,4 @@
+.. _py_api:
 .. index:: single: python api
 
 Python API

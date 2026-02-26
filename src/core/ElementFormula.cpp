@@ -59,6 +59,8 @@ void ElemFormula::calcMatrixInternal()
     const auto &matrixMap = res->first();
     _matrs[MatrixKind::T] = matrixMap[RES_MT].value<Z::Matrix>();
     _matrs[MatrixKind::S] = matrixMap[RES_MS].value<Z::Matrix>();
+    _matrs[MatrixKind::InvT] = matrixMap[RES_MT].value<Z::Matrix>();
+    _matrs[MatrixKind::InvS] = matrixMap[RES_MS].value<Z::Matrix>();
 }
 
 void ElemFormula::showError(PyRunner *py)

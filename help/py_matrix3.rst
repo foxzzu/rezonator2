@@ -3,7 +3,7 @@
 Class: Matrix3
 ==============
 
-Extended 3×3 ray transfer matrix for misalignment calculations.
+Extended 3×3 ray transfer matrix for :ref:`misalignment <func_misalign>` calculations.
 
 Constructor
 -----------
@@ -48,7 +48,7 @@ Indexing also allows for unpacking a matrix object into separate variables:
 .. code-block:: python
 
     m = Z.Matrix3()
-    A, B, C, D, E, F, G, H, I = m
+    A, B, E, C, D, F, G, H, I = m
 
 Operations
 ----------
@@ -82,3 +82,4 @@ Example
   - :doc:`py_api`
   - :doc:`py_matrix`
   - :doc:`py_ray_vector`
+  - :doc:`func_misalign`

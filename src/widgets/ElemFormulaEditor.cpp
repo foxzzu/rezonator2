@@ -1,6 +1,7 @@
 #include "ElemFormulaEditor.h"
 
 #include "../app/Appearance.h"
+#include "../app/HelpSystem.h"
 #include "../core/ElementFormula.h"
 #include "../math/FormatInfo.h"
 #include "../widgets/UnitWidgets.h"
@@ -146,8 +147,7 @@ void ElemFormulaEditor::clearLog()
 
 void ElemFormulaEditor::showHelp()
 {
-    // TODO
-    _logView->append("Show help");
+    Z::HelpSystem::topic("elem_opers_formula");
 }
 
 bool ElemFormulaEditor::canCopy()

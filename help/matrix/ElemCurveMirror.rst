@@ -18,3 +18,4 @@ The spherical mirror acts in the same way as a :doc:`thin lens <ElemThinLens>`, 
     - :doc:`../elem_matrs`
     - :doc:`../catalog`
     - :doc:`../elem_props`
+    - :doc:`ElemThinLens`

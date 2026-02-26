@@ -51,6 +51,7 @@ Interface elements have no index of refraction. Instead, they take indexes of ad
    matrix/ElemTiltedCrystal
    matrix/ElemTiltedInterface
    matrix/ElemTiltedPlate
+   matrix/ElemFormula
 
 
 .. seeAlso::
