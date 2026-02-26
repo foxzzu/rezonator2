@@ -24,6 +24,7 @@ public:
 
 protected:
     // Implementation of PlotFuncWindow
+    void calculate() override;
     QWidget* makeOptionsPanel() override;
     bool configureInternal() override;
     Z::Unit getDefaultUnitX() const override;

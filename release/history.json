@@ -1,6 +1,18 @@
 {
   "history": [
     {
+      "version": "2.3.0",
+      "date": "",
+      "changes": [
+        {
+          "text": "Can create simple formula elements with matrices given by user Python code"
+        },
+        {
+          "text": "Fix: multi-beam caustic calculates only active pump (https://github.com/orion-project/rezonator2/issues/99)"
+        }
+      ]
+    },
+    {
       "version": "2.2.2",
       "date": "2026-02-12",
       "changes": [

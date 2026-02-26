@@ -138,6 +138,12 @@ QWidget* CausticWindow::makeOptionsPanel()
     return new CausticOptionsPanel<CausticWindow>(this);
 }
 
+void CausticWindow::calculate()
+{
+    function()->setPump(schema()->activePump());
+    PlotFuncWindowStorable::calculate();
+}
+
 QString CausticWindow::readFunction(const QJsonObject& root)
 {
     function()->setMode(Z::IO::Utils::enumFromStr(

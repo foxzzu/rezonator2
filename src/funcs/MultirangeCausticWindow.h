@@ -12,6 +12,7 @@ public:
 
 protected:
     // Implementation of PlotFuncWindow
+    void calculate() override;
     QWidget* makeOptionsPanel() override;
     void getCursorInfo(const Z::ValuePoint& pos, CursorInfoValues& values) override;
     QList<BasicMdiChild::MenuItem> viewMenuItems() const override;

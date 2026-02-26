@@ -21,6 +21,12 @@ MultirangeCausticWindow::MultirangeCausticWindow(Schema *schema): MulticausticWi
     _plot->setFormatterTextY(_plot->defaultTextY());
 }
 
+void MultirangeCausticWindow::calculate()
+{
+    function()->setPump(schema()->activePump());
+    MulticausticWindow::calculate();
+}
+
 QList<BasicMdiChild::MenuItem> MultirangeCausticWindow::viewMenuItems() const
 {
     return MulticausticWindow::viewMenuItems() << _beamShape->actionToggle();

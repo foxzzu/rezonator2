@@ -100,12 +100,9 @@ void CausticFunction::calculate(CalculationMode calcMode)
 
 bool CausticFunction::prepareSinglePass(Element* ref)
 {
-    _pump = schema()->activePump();
     if (!_pump)
     {
-        setError(qApp->translate("Calc error",
-            "There is no active pump in the schema. "
-            "Use 'Pumps' window to create a new pump or activate one of the existing ones."));
+        setError(qApp->translate("Calc error", "Input beam is not provided."));
         return false;
     }
     _pumpCalc.reset(new PumpCalculator(_pump, schema()->wavelenSi(), _writeProtocol));
