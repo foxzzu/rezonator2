@@ -548,6 +548,8 @@ class ParamValueBackup
 public:
     ParamValueBackup(Parameter* param, const char *reason);
     ~ParamValueBackup();
+    
+    void cancel();
 
 private:
     Parameter* _param;

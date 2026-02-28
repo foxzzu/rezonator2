@@ -12,6 +12,79 @@ namespace PyModule::Schema {
 
 const char *moduleName = "schema";
 
+struct ParamLocker
+{
+    ParamLocker(Z::Parameter *param): alias(param->alias()), param(param)
+    {
+        Elements elems;
+        ElementEventsLocker::collectElems(param, elems);
+        for (auto elem : std::as_const(elems))
+        {
+            if (elem->params().indexOf(param) >= 0)
+                owner = elem;
+            lockers.insert(elem, new ElementEventsLocker(elem, "py.schema.lock_param"));
+        }
+        backup = new Z::ParamValueBackup(param, "py.schema.lock_param");
+    }
+    
+    ~ParamLocker()
+    {
+        auto schema = PyGlobal::schema;
+        auto globalParams = schema->globalParamsAsElem();
+    
+        // Python doesn't unload modules after a code has been run.
+        // So one could write in a code window a code like
+        // `schema.lock_param('P1')` without successive `schema.unlock_param('P1')`.
+        // Imagine then they do some manipulations whith elements or global parameters
+        // then adds to the code a call `schema.unlock_param('P1')`.
+        // The app will crash if some elements
+        // pointers to which are cached in this locker
+        // have been deleted.
+        // So we have to do some precautions to ensure if all elements are still exist
+        // and skip unlocking/restoring if they are not
+    
+        for (auto it = lockers.begin(); it != lockers.end(); it++)
+            if (schema->indexOf(it.key()) < 0 && it.key() != globalParams)
+            {
+                it.value()->cancel();
+                qWarning() << "py.schema.unlock_param"<< alias << 
+                    ": one of locked elements has been already deleted, skip unlocking";
+            }
+        
+        // Parameters that can be used in code always have some owners.
+        // Theys are either element parameres 
+        // or globals parameters, which are also owned by a special element.
+        // So we can check if the parameters still exist, but checking its owner's parameters list
+        if (schema->indexOf(owner) < 0 && owner != globalParams)
+        {
+            backup->cancel();
+            qWarning() << "py.schema.unlock_param"<< alias << 
+                ": parameter owner has been deleted, skip restoring";
+        }
+        else if (owner->params().indexOf(param) < 0)
+        {
+            backup->cancel();
+            qWarning() << "py.schema.unlock_param"<< alias << 
+                ": parameter has been deleted, skip restoring";
+        }
+
+        // restore values _before_ unlocking events
+        delete backup;
+        qDeleteAll(lockers);
+    }
+
+    QString alias;
+    Z::Parameter *param;
+    Element *owner = nullptr;
+    QHash<Element*, ElementEventsLocker*> lockers;
+    Z::ParamValueBackup *backup;
+};
+
+struct State
+{
+    QHash<QString, ParamLocker*> *lockedParams;
+};
+
 PyObject* wavelength(PyObject* Py_UNUSED(self), PyObject* Py_UNUSED(args))
 {
     CHECK_SCHEMA
@@ -28,6 +101,58 @@ PyObject* param(PyObject* Py_UNUSED(self), PyObject* args)
     if (!p)
         Py_RETURN_NONE;
     return PyFloat_FromDouble(p->value().toSi());
+}
+
+PyObject* set_param(PyObject* Py_UNUSED(self), PyObject* args)
+{
+    char *alias;
+    double val = qQNaN();
+    if (!PyArg_ParseTuple(args, "s|d", &alias, &val))
+        return nullptr;
+    auto param = SCHEMA->param(alias);
+    CHECK_(param, KeyError, "parameter not found")
+    CHECK_(!qIsNaN(val), ValueError, "invalid parameter value")
+    Z::Value value(val, param->dim()->siUnit());
+    param->setValue(value.toUnit(param->value().unit()));
+    Py_RETURN_NONE;
+}
+
+PyObject* lock_param(PyObject* self, PyObject* args)
+{
+    CHECK_SCHEMA
+    const char *alias;
+    if (!PyArg_Parse(args, "s", &alias))
+        return nullptr;
+    auto param = SCHEMA->param(alias);
+    CHECK_(param, KeyError, "parameter not found")
+    auto state = (State*)PyModule_GetState(self);
+    if (!state)
+        return nullptr;
+    if (!state->lockedParams)
+        state->lockedParams = new QHash<QString, ParamLocker*>;
+    state->lockedParams->insert(param->alias(), new ParamLocker(param));
+    Py_RETURN_NONE;
+}
+
+PyObject* unlock_param(PyObject* self, PyObject* args)
+{
+    CHECK_SCHEMA
+    const char *alias;
+    if (!PyArg_Parse(args, "s", &alias))
+        return nullptr;
+    auto state = (State*)PyModule_GetState(self);
+    if (!state)
+        return nullptr;
+    QString paramAlias(alias);
+    if (!state->lockedParams || !state->lockedParams->contains(paramAlias))
+    {
+        qWarning() << "py.schema.unlock_param: try to unlock not locked parameter" << paramAlias << "ignored";
+        Py_RETURN_NONE;
+    }
+    auto param = SCHEMA->param(alias);
+    CHECK_(param, KeyError, "parameter not found")
+    delete state->lockedParams->take(paramAlias);
+    Py_RETURN_NONE;
 }
 
 PyObject* elem(PyObject* Py_UNUSED(self), PyObject* arg)
@@ -192,6 +317,18 @@ int on_exec(PyObject *module)
     return 0;
 }
 
+void on_free(PyObject *module)
+{
+    auto state = (State*)PyModule_GetState(module);
+    if (state && state->lockedParams)
+    {
+        // Ideally there should be parameters unlocking, but I don't see that Python calls this method.
+        // The module stays in memory all the time and is not freed even when its code gets replaced.
+        
+        delete state->lockedParams;
+    }
+}
+
 PyMethodDef methods[] = {
     { "elem", elem, METH_O, "Return element by label or number" },
     { "elem_count", elem_count, METH_NOARGS, "Return number of elements in schema" },
@@ -199,6 +336,9 @@ PyMethodDef methods[] = {
     { "is_sw", is_sw, METH_NOARGS, "If schema is standing wave rezonator" },
     { "is_rr", is_rr, METH_NOARGS, "If schema is ring rezonator" },
     { "param", param, METH_O, "Return value of global parameter (in SI units)." },
+    { "set_param", set_param, METH_VARARGS, "Set value of global parameter (in SI units)." },
+    { "lock_param", lock_param, METH_O, "Disable events for elements driven by this parameter" },
+    { "unlock_param", unlock_param, METH_O, "Enable events for elements driven by this parameter" },
     { "wavelength", wavelength, METH_NOARGS, "Return current wavelength (in m)." },
     { "round_trip", (PyCFunction)round_trip, METH_VARARGS | METH_KEYWORDS,
         "Return a RoundTrip object that can be used for basic calculations." },
@@ -214,9 +354,10 @@ PyModuleDef_Slot slotes[] = {
 PyModuleDef module = {
     .m_base = PyModuleDef_HEAD_INIT,
     .m_name = moduleName,
-    .m_size = 0,
+    .m_size = sizeof(State),
     .m_methods = methods,
     .m_slots = slotes,
+    .m_free = (freefunc)on_free,
 };
 
 PyObject* init()

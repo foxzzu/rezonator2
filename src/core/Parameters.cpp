@@ -22,10 +22,16 @@ ParamValueBackup::ParamValueBackup(Parameter* param, const char *reason)
 
 ParamValueBackup::~ParamValueBackup()
 {
+    if (!_param) return;
     //qDebug() << "Restore param" << _param->alias() << _reason;
     _param->setValue(_value);
     _param->setExpr(_expr);
     _param->setError(_error);
+}
+
+void ParamValueBackup::cancel()
+{
+    _param = nullptr;
 }
 
 //------------------------------------------------------------------------------

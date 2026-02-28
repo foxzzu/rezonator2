@@ -5,6 +5,9 @@
       "date": "",
       "changes": [
         {
+          "text": "New functions in Python API: schema.set_param, schema.lock_param, schema.unlock_param"
+        },
+        {
           "text": "Can create simple formula elements with matrices given by user Python code"
         },
         {

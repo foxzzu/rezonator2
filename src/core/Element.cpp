@@ -289,7 +289,9 @@ ElementEventsLocker::ElementEventsLocker(Element* elem, const char *reason): _re
 
 ElementEventsLocker::ElementEventsLocker(Z::Parameter* param, const char *reason): _reason(reason)
 {
-    collectElems(param);
+    collectElems(param, _elems);
+    for (auto elem : std::as_const(_elems))
+        elem->_eventsLocked = true;
     //qDebug() << "Lock events" << Z::Utils::displayStr(_elems) << reason;
 }
 
@@ -300,21 +302,26 @@ ElementEventsLocker::~ElementEventsLocker()
         elem->_eventsLocked = false;
 }
 
-void ElementEventsLocker::collectElems(Z::Parameter *param)
+void ElementEventsLocker::cancel()
+{
+    _elems.clear();
+}
+
+void ElementEventsLocker::collectElems(Z::Parameter *param, Elements &elems)
 {
     for (auto listener : param->listeners()) {
         if (auto elem = dynamic_cast<Element*>(listener); elem) {
-            _elems << elem;
-            elem->_eventsLocked = true;
+            if (!elems.contains(elem))
+                elems << elem;
         }
         else if (auto link = dynamic_cast<Z::ParamLink*>(listener); link) {
             for (auto listener : link->target()->listeners())
                 if (auto elem = dynamic_cast<Element*>(listener); elem) {
-                    _elems << elem;
-                    elem->_eventsLocked = true;
+                    if (!elems.contains(elem))
+                        elems << elem;
                 }
         } else if (auto formula = dynamic_cast<Z::Formula*>(listener); formula) {
-            collectElems(formula->target());
+            collectElems(formula->target(), elems);
         }
     }
 }
