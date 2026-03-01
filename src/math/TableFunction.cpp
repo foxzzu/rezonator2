@@ -195,7 +195,7 @@ QString TableFunction::calculateAtElem(Element *elem, int index, IsTwoSides twoS
             {
                 auto nextMedium = Z::Utils::asMedium(nextElem);
                 auto overrideIor = nextMedium ? OptionalIor(nextMedium->ior()) : OptionalIor();
-                calculateAt(CalcElem(elem), ResultElem(elem, ResultPosition::ELEMENT), overrideIor);
+                calculateAt(CalcElem::Elem(elem), ResultElem(elem, ResultPosition::ELEMENT), overrideIor);
                 return "";
             }
 
@@ -205,7 +205,7 @@ QString TableFunction::calculateAtElem(Element *elem, int index, IsTwoSides twoS
             {
                 auto prevMedium = Z::Utils::asMedium(prevElem);
                 auto overrideIor = prevMedium ? OptionalIor(prevMedium->ior()) : OptionalIor();
-                calculateAt(CalcElem(elem), ResultElem(elem, ResultPosition::ELEMENT), overrideIor);
+                calculateAt(CalcElem::Elem(elem), ResultElem(elem, ResultPosition::ELEMENT), overrideIor);
                 return "";
             }
         }
@@ -239,7 +239,7 @@ QString TableFunction::calculateAtElem(Element *elem, int index, IsTwoSides twoS
             auto nextMedium = Z::Utils::asMedium(nextElem);
             auto overrideIor = nextMedium ? OptionalIor(nextMedium->ior()) : OptionalIor();
             auto resultPosition = twoSides ? ResultPosition::RIGHT : ResultPosition::ELEMENT;
-            calculateAt(CalcElem(elem), ResultElem(elem, resultPosition), overrideIor);
+            calculateAt(CalcElem::Elem(elem), ResultElem(elem, resultPosition), overrideIor);
             return "";
         }
         if (!nextElem)
@@ -252,11 +252,11 @@ QString TableFunction::calculateAtElem(Element *elem, int index, IsTwoSides twoS
                 // But at least this calculation is consistent with those for SW schema.
                 auto prevMedium = Z::Utils::asMedium(prevElem);
                 auto overrideIor = prevMedium ? OptionalIor(prevMedium->ior()) : OptionalIor();
-                calculateAt(CalcElem(prevElem), ResultElem(elem, ResultPosition::LEFT), overrideIor);
+                calculateAt(CalcElem::Elem(prevElem), ResultElem(elem, ResultPosition::LEFT), overrideIor);
             }
             // Calculate pump params after the last element
             auto resultPosition = twoSides ? ResultPosition::RIGHT : ResultPosition::ELEMENT;
-            calculateAt(CalcElem(elem), ResultElem(elem, resultPosition));
+            calculateAt(CalcElem::Elem(elem), ResultElem(elem, resultPosition));
             return "";
         }
     }
@@ -307,7 +307,7 @@ QString TableFunction::calculateAtInterface(Element* iface, int index)
         switch (schema()->tripType())
         {
         case TripType::SP:
-            calculateAt(CalcElem(iface), ResultElem(iface, ResultPosition::IFACE_RIGHT));
+            calculateAt(CalcElem::Elem(iface), ResultElem(iface, ResultPosition::IFACE_RIGHT));
             return "";
 
         case TripType::SW:
@@ -395,7 +395,7 @@ QString TableFunction::calculateInMiddle(Element* elem, Element* prevElem, Eleme
         if (twoSides || !SAME_DOUBLE(prevMedium->ior(), nextMedium->ior()))
         {
             calculateAt(CalcElem::RangeEnd(prevMedium), ResultElem(elem, ResultPosition::LEFT));
-            calculateAt(CalcElem(elem), ResultElem(elem, ResultPosition::RIGHT), OptionalIor(nextMedium->ior()));
+            calculateAt(CalcElem::Elem(elem), ResultElem(elem, ResultPosition::RIGHT), OptionalIor(nextMedium->ior()));
         }
         else
         {
@@ -407,12 +407,12 @@ QString TableFunction::calculateInMiddle(Element* elem, Element* prevElem, Eleme
     if (twoSides)
     {
         auto prevRange = prevElem->asRange();
-        auto calcElem = prevRange ? CalcElem::RangeEnd(prevRange->elem) : CalcElem(prevElem);
+        auto calcElem = prevRange ? CalcElem::RangeEnd(prevRange->elem) : CalcElem::Elem(prevElem);
         calculateAt(calcElem, ResultElem(elem, ResultPosition::LEFT));
-        calculateAt(CalcElem(elem), ResultElem(elem, ResultPosition::RIGHT));
+        calculateAt(CalcElem::Elem(elem), ResultElem(elem, ResultPosition::RIGHT));
     }
     else
-        calculateAt(CalcElem(elem), ResultElem(elem, ResultPosition::ELEMENT));
+        calculateAt(CalcElem::Elem(elem), ResultElem(elem, ResultPosition::ELEMENT));
     return "";
 }
 

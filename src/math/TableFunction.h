@@ -92,10 +92,10 @@ public:
         SubrangeOpt subrangeOpt = SubrangeOpt::NONE;
         
         static CalcElem Elem(Element *elem) { return CalcElem{elem, {}, SubrangeOpt::NONE}; }
-        static CalcElem Range(Element *range, double subrange) { return CalcElem(range, subrange, SubrangeOpt::ANY); }
+        static CalcElem Range(Element *range, double subrange) { return CalcElem{range, subrange, SubrangeOpt::ANY}; }
         static CalcElem RangeBeg(Element *range) { return CalcElem{range, {}, SubrangeOpt::BEG}; }
-        static CalcElem RangeMid(Element *range) { return CalcElem(range, {}, SubrangeOpt::MID); }
-        static CalcElem RangeEnd(Element *range) { return CalcElem(range, {}, SubrangeOpt::END); }
+        static CalcElem RangeMid(Element *range) { return CalcElem{range, {}, SubrangeOpt::MID}; }
+        static CalcElem RangeEnd(Element *range) { return CalcElem{range, {}, SubrangeOpt::END}; }
     };
 
     struct ResultElem
