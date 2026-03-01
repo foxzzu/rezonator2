@@ -140,7 +140,7 @@ Enable element events and restore backed up parameter values.
 
 .. note::
 
-  Use ``Element.lock()`` and ``Element.unlock()`` methods when making temporary parameter changes (e.g., during :doc:`plot function <custom_plot>` calculation) to ensure proper restoration and also to preventing the UI from unnecessary updates.
+  Use ``Element.lock()`` and ``Element.unlock()`` methods when making temporary parameter changes (e.g., during :doc:`plot function <custom_plot>` calculation) to ensure proper restoration and also to prevent the UI from unnecessary updates. UI updates can significantly slow down the application when happen too often.
 
 Example:
 
@@ -156,6 +156,39 @@ Example:
   finally:
     # Restore original values
     elem.unlock()
+
+.. #######################################################################
+
+.. index:: single: param_ref (Python)
+.. _py_method_elem_param_ref:
+
+``param_ref(label)``
+~~~~~~~~~~~~~~~~~~~~
+
+Create a :doc:`ParamRef <py_param_ref>` object for more convenient implementation of the lock-unlock pattern in plotting functions.
+
+Arguments:
+
+- ``label`` (str) - Parameter label
+
+Raises:
+
+- ``KeyError`` - If parameter is not found
+
+Example:
+
+.. code-block:: python
+
+    elem = schema.elem('Cr')
+    with elem.param_ref('L') as p:
+      # Make temporary changes:
+      for i in range(num_points):
+        p.set_value(i)
+
+        # Calculate something...
+
+    #  Original value is automatically restored
+
 
 .. seeAlso::
 
