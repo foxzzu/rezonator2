@@ -20,9 +20,11 @@ Despite the number of good [examples](https://www.scilab.org), in the profession
 
 - **Optical systems:** reZonator supports different [optical system types](http://rezonator.orion-project.org/help/trip_type.html) — standing wave laser cavities and running wave (ring) resonators, as well as conventional single-pass systems, e.g., pump roads or beam expanders. The M² beam quality factor also is taken into account for single-pass systems.
 
-- **Optical elements:** programs' [elements catalog](http://rezonator.orion-project.org/help/elements.html) contains many essential optical elements — ranges, lenses, mirrors, crystals, and many more. The ABCD ray matrix algorithm is used for simulation of optical elements, so you also can define your own element by providing its matrix. *⚡️Coming soon:* Fully custom elements where you can provide formulas for computing matrices from parameters.
+- **Optical elements:** programs' [elements catalog](http://rezonator.orion-project.org/help/elements.html) contains many essential optical elements — ranges, lenses, mirrors, crystals, and many more. The ABCD ray matrix algorithm is used for simulation of optical elements, so you also can define your own element by providing its matrix.
 
-- :new: :fire: **Custom parameters** allow you to extend elements with additional user-defined parameters beyond their standard built-in parameters which is useful when you need to track or calculate additional properties specific to your optical system.
+- :new: :fire: With **Custom elements** you can provide formulas for [computing matrices](http://rezonator.orion-project.org/help/matrix/ElemFormula.html) from element's parameters and create your own optical components that are not presented in the standard library.
+
+- :new: :fire: **Custom parameters** allow you to extend elements with additional [user-defined parameters](http://rezonator.orion-project.org/help/custom_params.html) beyond their standard built-in parameters which is useful when you need to track or calculate additional properties specific to your optical system.
 
 - **Unrestricted design:** the app doesn't calculate any particular optical geometry. Instead, it is possible to construct an arbitrary optical system from proposed or user-defined optical elements. reZonator automatically creates a [rendition](http://rezonator.orion-project.org/help/layout.html) of the system under investigation — almost as if you could sketch it on a paper sheet or your drawing board.
 

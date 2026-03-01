@@ -2,7 +2,7 @@
   "history": [
     {
       "version": "2.3.0",
-      "date": "",
+      "date": "2026-03-01",
       "changes": [
         {
           "text": "New class and functions in Python API: Z.ParamRef, schema.param_ref(), Element.param_ref()"
