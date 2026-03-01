@@ -68,6 +68,8 @@ The results from the ``calculate()`` function are automatically displayed as gra
 
 For simple text output or debugging, use :doc:`custom_script`. For tabular data presentation, consider :doc:`custom_table`.
 
+.. _custom_plot_lock:
+
 Element Locking
 ---------------
 
@@ -75,7 +77,7 @@ When your calculation varies element parameters (e.g., in a parameter sweep), yo
 
 - Preserves the original parameter value for automatic restoration
 - Disables UI updates during calculations for better performance
-- Prevents recalculation of built-in functions while parameters change
+- Prevents recalculation of other functions while parameters change
 
 .. code-block:: python
 
@@ -88,6 +90,15 @@ When your calculation varies element parameters (e.g., in a parameter sweep), yo
       elem.unlock()
 
 Always use a try/finally block to ensure the element is unlocked even if an error occurs.
+
+A more convenient way is the usage of Python's ``with`` block and the intended :ref:`Element.param_ref() <py_method_elem_param_ref>` or :ref:`schema.param_ref() <py_method_schema_param_ref>` methods returning the :doc:`ParamRef <py_param_ref>` object, which allows for automatically locking/unlocking and parameter value restoring:
+
+.. code-block:: python
+
+  with elem.param_res('R') as r:
+    for i in range(point_count):
+      r.set_value(value)
+      # Perform calculations...
 
 Custom Library
 --------------

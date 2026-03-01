@@ -465,11 +465,13 @@ public:
     ElementEventsLocker(Z::Parameter *param, const char *reason);
     ~ElementEventsLocker();
 
+    void cancel();
+
+    static void collectElems(Z::Parameter *param, Elements &elems);
+    
 private:
     Elements _elems;
     const char *_reason;
-
-    void collectElems(Z::Parameter *param);
 };
 
 //------------------------------------------------------------------------------

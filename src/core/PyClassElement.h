@@ -3,6 +3,7 @@
 
 #include "PyUtils.h"
 #include "PyClassMatrix.h"
+#include "PyClassParamRef.h"
 #include "Schema.h"
 #include "../math/FunctionUtils.h"
 
@@ -146,6 +147,17 @@ PyObject* set_param(Self *self, PyObject *args)
     Py_RETURN_NONE;
 }
 
+PyObject* param_ref(Self *self, PyObject* args)
+{
+    CHECK_SCHEMA
+    const char *alias;
+    if (!PyArg_Parse(args, "s", &alias))
+        return nullptr;
+    auto param = self->elem->param(QString::fromUtf8(alias));
+    CHECK_(param, KeyError, "parameter not found")
+    return PyClass::ParamRef::make(param);
+}
+
 PyObject* lock(Self *self, PyObject *Py_UNUSED(args))
 {
     //qDebug() << "Lock" << self->elem->label();
@@ -199,6 +211,7 @@ PyTypeObject* type()
     static PyMethodDef methods[] = {
         { "param", (PyCFunction)param, METH_VARARGS, "Return element's parameter value (in SI units) by alias" },
         { "set_param", (PyCFunction)set_param, METH_VARARGS, "Set element's parameter value (in SI units) by alias" },
+        { "param_ref", (PyCFunction)param_ref, METH_O, "Return reference to element's parameter." },
         { "lock", (PyCFunction)lock, METH_NOARGS, "Disable element event and backup parameters values" },
         { "unlock", (PyCFunction)unlock, METH_NOARGS, "Enable element event and restore parameters values" },
         { "matrix", (PyCFunction)matrix, METH_VARARGS, "Return element matrix in the given plane" },

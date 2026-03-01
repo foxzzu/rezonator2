@@ -5,6 +5,12 @@
       "date": "",
       "changes": [
         {
+          "text": "New class and functions in Python API: Z.ParamRef, schema.param_ref(), Element.param_ref()"
+        },
+        {
+          "text": "New functions in Python API: schema.set_param(), schema.lock_param(), schema.unlock_param() (https://github.com/orion-project/rezonator2/issues/100)"
+        },
+        {
           "text": "Can create simple formula elements with matrices given by user Python code"
         },
         {

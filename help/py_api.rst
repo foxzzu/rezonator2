@@ -15,6 +15,7 @@ Python API
    py_element
    py_matrix
    py_matrix3
+   py_param_ref
    py_ray_vector
    py_round_trip
    py_examples
@@ -35,7 +36,9 @@ All values are in SI units (meters, radians, etc.). Convert them as needed for d
 Temporary Changes
 ~~~~~~~~~~~~~~~~~
 
-Use :ref:`Element.lock() <py_method_elem_lock>` and :ref:`Element.unlock() <py_method_elem_unlock>` methods when making temporary parameter :ref:`changes <py_method_elem_set_param>` (e.g., during :doc:`plot function <custom_plot>` calculation) to ensure proper restoration and also to preventing the UI from unnecessary updates.
+Use :ref:`Element.lock() <py_method_elem_lock>` and :ref:`Element.unlock() <py_method_elem_unlock>` methods (or respective :ref:`schema.param_lock() <py_method_schema_lock_param>` and :ref:`schema.param_unlock() <py_method_schema_unlock_param>` working with global parameters) when making temporary parameter :ref:`changes <py_method_elem_set_param>` (e.g., during :doc:`plot function <custom_plot>` calculation) to ensure proper restoration and also to prevent the UI from unnecessary updates.
+
+A more convenient way is the usage of Python's ``with`` block and the intended :ref:`Element.param_ref() <py_method_elem_param_ref>` or :ref:`schema.param_ref() <py_method_schema_param_ref>` methods returning the :doc:`ParamRef <py_param_ref>` object, which allows for automatically locking/unlocking and parameter value restoring.
 
 Performance
 ~~~~~~~~~~~

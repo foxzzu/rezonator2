@@ -114,6 +114,118 @@ Example:
 
 .. #######################################################################
 
+.. index:: single: set_param (Python)
+
+``set_param(label, value)``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Set a :doc:`global parameter <params_window>` value by label.
+
+Arguments:
+
+- ``label`` (str) - Parameter label
+- ``value`` (float) - Parameter value in SI units
+
+Raises:
+
+- ``KeyError`` - If parameter is not found
+- ``ValueError`` - If value is invalid
+
+Example:
+
+.. code-block:: python
+
+    import schema
+    schema.set_param('P1', 10e-3)
+
+
+.. #######################################################################
+
+.. index:: single: lock_param (Python)
+.. _py_method_schema_lock_param:
+
+``lock_param(label)``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Lock element those are directly or indirectly depend on  a :doc:`global parameter <params_window>`.
+
+Arguments:
+
+- ``label`` (str) - Parameter label
+
+Raises:
+
+- ``KeyError`` - If parameter is not found
+
+.. #######################################################################
+
+.. index:: single: unlock_param (Python)
+.. _py_method_schema_unlock_param:
+
+``unlock_param(label)``
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Unlock elements previously locked by the :ref:`lock_param <py_method_schema_lock_param>` method.
+
+Arguments:
+
+- ``label`` (str) - Parameter label
+
+Raises:
+
+- ``KeyError`` - If parameter is not found
+
+.. note::
+
+  Use ``schema.lock_param()`` and ``schema.unlock_param()`` methods when making temporary parameter changes (e.g., during :doc:`plot function <custom_plot>` calculation) to ensure proper restoration and also to prevent the UI from unnecessary updates. UI updates can significantly slow down the application when happen too often.
+
+Example:
+
+.. code-block:: python
+
+    import schema
+    schema.lock_param('P1')
+    try:
+      # Make temporary changes:
+      for i in range(num_points):
+        schema.set_param('P1', i)
+        # Calculate something...
+    finally:
+      # Restore original values
+      schema.unlock_param('P1')
+
+.. #######################################################################
+
+.. index:: single: param_ref (Python)
+.. _py_method_schema_param_ref:
+
+``param_ref(label)``
+~~~~~~~~~~~~~~~~~~~~
+
+Create a :doc:`ParamRef <py_param_ref>` object for more convenient implementation of the lock-unlock pattern in plotting functions.
+
+Arguments:
+
+- ``label`` (str) - Parameter label
+
+Raises:
+
+- ``KeyError`` - If parameter is not found
+
+Example:
+
+.. code-block:: python
+
+    import schema
+    with schema.param_ref('P1') as p:
+      # Make temporary changes:
+      for i in range(num_points):
+        p.set_value(i)
+        # Calculate something...
+    #  Original value is automatically restored
+
+.. #######################################################################
+
 .. index:: single: is_sp (Python)
 .. index:: single: is_sw (Python)
 .. index:: single: is_rr (Python)
@@ -170,10 +282,8 @@ Example:
 
     import rezonator as Z
     import schema
-
     # Create round trip for element 'M2' in tangential plane
     rt_t = schema.round_trip(ref='M2', plane='T')
-
     # Create round trip with element split at midpoint
     elem = schema.elem(4)
     elem.offset = elem.axial_length / 2
