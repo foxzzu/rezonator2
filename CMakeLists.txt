@@ -93,6 +93,7 @@ set(PROJECT_SOURCES
     src/core/PyClassRayVector.h
     src/core/PyClassMatrix3.h
     src/core/PyClassElement.h
+    src/core/PyClassParamRef.h
     src/core/PyClassRoundTrip.h
     src/core/PyModuleGlobal.h
     src/core/PyModuleSchema.h

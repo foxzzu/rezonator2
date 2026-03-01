@@ -3,6 +3,7 @@
 
 #include "PyUtils.h"
 #include "PyClassElement.h"
+#include "PyClassParamRef.h"
 #include "PyClassRoundTrip.h"
 #include "Schema.h"
 #include "../math/BeamCalculator.h"
@@ -153,6 +154,17 @@ PyObject* unlock_param(PyObject* self, PyObject* args)
     CHECK_(param, KeyError, "parameter not found")
     delete state->lockedParams->take(paramAlias);
     Py_RETURN_NONE;
+}
+
+PyObject* param_ref(PyObject* Py_UNUSED(self), PyObject* args)
+{
+    CHECK_SCHEMA
+    const char *alias;
+    if (!PyArg_Parse(args, "s", &alias))
+        return nullptr;
+    auto param = SCHEMA->param(alias);
+    CHECK_(param, KeyError, "parameter not found")
+    return PyClass::ParamRef::make(param);
 }
 
 PyObject* elem(PyObject* Py_UNUSED(self), PyObject* arg)
@@ -339,6 +351,7 @@ PyMethodDef methods[] = {
     { "set_param", set_param, METH_VARARGS, "Set value of global parameter (in SI units)." },
     { "lock_param", lock_param, METH_O, "Disable events for elements driven by this parameter" },
     { "unlock_param", unlock_param, METH_O, "Enable events for elements driven by this parameter" },
+    { "param_ref", param_ref, METH_O, "Return reference to global parameter." },
     { "wavelength", wavelength, METH_NOARGS, "Return current wavelength (in m)." },
     { "round_trip", (PyCFunction)round_trip, METH_VARARGS | METH_KEYWORDS,
         "Return a RoundTrip object that can be used for basic calculations." },

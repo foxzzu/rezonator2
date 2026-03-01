@@ -4,6 +4,7 @@
 #include "PyUtils.h"
 #include "PyClassElement.h"
 #include "PyClassMatrix3.h"
+#include "PyClassParamRef.h"
 #include "PyClassRoundTrip.h"
 
 #include "CommonTypes.h"
@@ -112,6 +113,7 @@ int on_exec(PyObject *module)
     ADD_TYPE(Matrix3)
     ADD_TYPE(RayVector)
     ADD_TYPE(RoundTrip)
+    ADD_TYPE(ParamRef)
 
     qDebug() << "Module executed:" << moduleName;
     return 0;
